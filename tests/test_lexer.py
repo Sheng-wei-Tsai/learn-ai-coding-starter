@@ -47,8 +47,20 @@ def test_hallucinate_is_an_identifier_not_a_keyword():
     assert tokenize("hallucinate")[0].type is TokenType.IDENTIFIER
 
 
+def test_loadbearing_is_a_keyword():
+    assert types("loadbearing LIMIT") == [
+        TokenType.LOADBEARING,
+        TokenType.IDENTIFIER,
+        TokenType.EOF,
+    ]
+
+
 def test_string_may_contain_em_dash_and_opening_quote():
     assert tokenize("“x — “y”")[0].literal == "x — “y"
+
+
+def test_string_escapes_become_their_characters():
+    assert tokenize("“a\\nb\\tc\\”d\\\\e”")[0].literal == "a\nb\tc”d\\e"
 
 
 @pytest.mark.parametrize(
@@ -65,6 +77,7 @@ def test_string_may_contain_em_dash_and_opening_quote():
         ("“a\\", 1, "unterminated string"),
         ("a & b", 1, "unexpected character '&', did you mean '&&'?"),
         ("a | b", 1, "unexpected character '|', did you mean '||'?"),
+        ("a % b", 1, "unexpected character '%'"),
     ],
 )
 def test_lexical_errors(source: str, line: int, message: str):

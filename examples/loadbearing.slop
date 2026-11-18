@@ -1,0 +1,19 @@
+— loadbearing declares an immutable variable.
+loadbearing LIMIT = 100✨
+slop score = 10✨
+
+— slop can be reassigned.
+score = score + 1✨
+
+— Reading a loadbearing works like any other name.
+hallucinate(score)✨
+hallucinate(LIMIT)✨
+
+clanker capped(total) {
+    vibe total > LIMIT {
+        ship LIMIT✨
+    }
+    ship total✨
+}
+
+hallucinate(capped(150))✨

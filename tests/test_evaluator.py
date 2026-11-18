@@ -19,6 +19,9 @@ def fails(source: str) -> str:
     ("expression", "expected"),
     [
         ("7 / 2", "3"),
+        ("-7 / 2", "-3"),  # truncates toward zero, not floor
+        ("7 / -2", "-3"),
+        ("-7 / -2", "3"),
         ("2 - 3 * 4", "-10"),
         ("(2 - 3) * 4", "-4"),
         ("--5", "5"),
@@ -69,6 +72,45 @@ def test_assignment_walks_up_the_scope_chain():
 }
 hallucinate(x)✨"""
     assert run(source) == "2\n"
+
+
+def test_loadbearing_cannot_be_reassigned():
+    assert fails("loadbearing LIMIT = 100✨\nLIMIT = 200✨") == (
+        "SlopLang runtime error at line 2: cannot assign to loadbearing 'LIMIT'"
+    )
+
+
+def test_loadbearing_is_shadowed_in_an_inner_scope():
+    source = """loadbearing LIMIT = 100✨
+{
+    loadbearing LIMIT = 5✨
+    hallucinate(LIMIT)✨
+}
+hallucinate(LIMIT)✨"""
+    assert run(source) == "5\n100\n"
+
+
+@pytest.mark.parametrize(
+    "source",
+    [
+        "loadbearing X = 1✨\nloadbearing X = 2✨",
+        "slop X = 1✨\nloadbearing X = 2✨",
+        "loadbearing X = 1✨\nslop X = 2✨",
+    ],
+)
+def test_loadbearing_cannot_be_redeclared_in_the_same_scope(source: str):
+    assert (
+        fails(source) == "SlopLang runtime error at line 2: 'X' is already declared in this scope"
+    )
+
+
+def test_clanker_cannot_assign_a_global_loadbearing():
+    source = """loadbearing LIMIT = 100✨
+clanker bump() {
+    LIMIT = LIMIT + 1✨
+}
+bump()✨"""
+    assert fails(source) == "SlopLang runtime error at line 3: cannot assign to loadbearing 'LIMIT'"
 
 
 def test_loop_body_is_a_fresh_scope_each_iteration():
