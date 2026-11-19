@@ -6,6 +6,8 @@ Files use the `.slop` extension and run with:
 uv run sloperator.py path/to/program.slop
 ```
 
+Pass `--check` to validate a file's syntax without running it: `uv run sloperator.py --check path/to/program.slop`.
+
 ## Example
 
 ```slop

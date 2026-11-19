@@ -3,8 +3,45 @@
 Notes and key takeaways from Boot.dev's **Learn AI Coding** course, kept newest-first.
 Each entry records what the lesson asked, what changed in this repo, and what to remember.
 
-Workflow: after every successful `bootdev run -s`, a new section is added here and pushed.
+Workflow: after every passing lesson run, a new section is added here and pushed.
 See `AGENTS.md` for the rule, or run `/lesson-notes` to do it on demand.
+
+---
+
+## 4.4 — Steering · 2026-11-19 · +326 XP
+
+**What the lesson asked:** add a CLI flag that validates a file's syntax without executing it.
+Partway through, the request was steered: use `--check` instead of the originally named
+`--validate`.
+
+**What changed:**
+
+- `sloperator/runner.py` — new `check_program()` that tokenizes and parses without touching the
+  interpreter, plus a shared `raise_recursion_limit()` so check mode is as safe as a real run.
+- `sloperator.py` — parses `--check` before the path; exit `0` valid, `1` lexical/syntax error on
+  stderr, `2` unreadable file or bad usage. Success prints nothing.
+- `tests/test_cli.py` — four cases: valid file, syntax error proven not to execute, runtime error
+  still accepted, missing filename.
+- `docs/spec.md` and `README.md` — one line documenting the flag beside the run command.
+
+**Key takeaways**
+
+- Steering is cheap when it arrives before code is written: the flag name changed and nothing had
+  to be undone. Read the steer as a correction to the requirement, not to the task.
+- "Check" means lex and parse only. A program with an undefined variable is syntactically valid,
+  so it must pass — mixing in runtime checks would make the flag a different feature.
+- Silent success plus meaningful exit codes is what makes a validator usable in scripts and
+  pre-commit hooks.
+- Proving "does not execute" needs a program that prints *before* the syntax error, then asserting
+  stdout is empty. Exit code alone can't distinguish "not run" from "ran and failed".
+- Sharing the recursion guard kept check mode from being accidentally weaker than a real run on
+  deeply nested input.
+
+**中文摘要**
+
+新增 `--check` 参数：只做词法与语法分析、不执行程序，语法正确返回 0，语法错误返回 1 并输出
+原有错误格式。中途收到 steering 消息把 `--validate` 改名为 `--check`，因为当时还没写代码，
+改名没有返工成本。验证「不执行」时必须用先打印再报错的程序，断言 stdout 为空。
 
 ---
 
