@@ -10,6 +10,39 @@ Chapter study guides (mental models, cheat sheets, self-tests) live in [`chapter
 
 ---
 
+## 4.5 — The Prompt Box · 2026-11-20 · +328 XP
+
+**What the lesson asked:** create `examples/doubling.slop` that doubles the number 13 and prints
+26, using the prompt box properly — attach `docs/spec.md` and `examples/hello.slop` with `@`,
+write a multiline prompt with the task separated from its expected output, then verify with shell
+mode.
+
+**What changed:**
+
+- `examples/doubling.slop` — `clanker double(number)` shipping `number * 2`, called once with 13.
+- `notes/chapters/the-prompt-box.md` — the chapter study guide this lesson belongs to.
+- Included in `notes: The Prompt Box chapter guide` (`b3feb63`).
+
+**Key takeaways**
+
+- Attaching exact sources beats describing them; `@docs/spec.md` removed any guesswork about
+  terminators, comment syntax, or statement shape.
+- The `Expected output: 26` block is what made verification possible. The sample snippet printed
+  42 from 21, so without a written target it would have been easy to reproduce 42 by habit.
+- Changing the input from 21 to 13 is deliberate: it forces you to understand the code rather than
+  transcribe it.
+- Shell mode (`!` command) turns a claim into evidence, and its output joins the session, so the
+  next prompt can refer to the real result.
+- `--check` first, then run, then the full suite — three cheap layers instead of one trusting one.
+
+**中文摘要**
+
+用 `@` 附加 `docs/spec.md` 与 `examples/hello.slop` 提供准确上下文，多行提示把任务与预期输出
+（13 → 26）分开，再用 shell 模式运行确认输出。把示例里的 21 改成 13 是为了避免照抄，真正理解
+`clanker` + `ship` 的组合；最后用 `--check`、实际运行和完整测试三层确认。
+
+---
+
 ## 4.4 — Steering · 2026-11-19 · +326 XP
 
 **What the lesson asked:** add a CLI flag that validates a file's syntax without executing it.
