@@ -10,6 +10,43 @@ Chapter study guides (mental models, cheat sheets, self-tests) live in [`chapter
 
 ---
 
+## 4.8 — Speech to Text · 2026-11-20 · +128 XP
+
+**What the lesson asked:** create `examples/countdown.slop` from a *dictated* instruction —
+SlopLang that prints 3, 2, 1 on separate lines, then prints `liftoff`. Review the transcription
+before sending it.
+
+**What changed:**
+
+- `examples/countdown.slop` — `slop n = 3✨`, `ralph n > 0` printing then decrementing, and a final
+  `hallucinate(“liftoff”)✨`.
+- Initially committed with `later` as the last line (`682ae09`); the lesson's output check caught it,
+  and `8e77b18` corrected the word.
+
+**Key takeaways**
+
+- Speech-to-text fails *quietly* on rare words: `liftoff` became `later` — a real English word, so
+  nothing looked garbled and no spellcheck fired. The damage showed up only as wrong output.
+- Reading the transcription back is not the same as trusting it. I flagged `later` as the one risky
+  word and still shipped it; the honest move was to ask before sending, not after.
+- The lesson check was the actual reviewer: it compared stdout against `3 / 2 / 1 / liftoff` and
+  failed on a single word. Executable expected output catches transcription errors that prose
+  review waves through.
+- A countdown needs no `for` loop: a `slop` counter with `ralph n > 0` and `n = n - 1` is idiomatic
+  here, and `hallucinate(number)` prints digits bare.
+- A failing lesson step means stop — no notes, no push — then fix and resubmit. The second run
+  passed both steps and gained the XP.
+
+**中文摘要**
+
+课程要求根据**语音转写**的指令创建 `examples/countdown.slop`：打印 3、2、1 再打印 `liftoff`。
+转写把 `liftoff` 听成了 `later`，而 `later` 是合法英文单词，所以没有任何乱码或拼写提示，错误
+只体现在输出上。第一次提交因此失败；改成 `liftoff` 后重新提交通过。教训：语音转写对生僻词是
+**静默出错**，回读转写文本时要主动质疑可疑词，最好直接问；可执行的期望输出才是真正的校对。
+实现上用 `ralph n > 0` 递减计数即可，不需要 `for`。
+
+---
+
 ## 4.6 — Queueing · 2026-11-20 · +128 XP
 
 **What the lesson asked:** `hallucinate(1 / 0)✨` crashed with a Python traceback. It had to become a
