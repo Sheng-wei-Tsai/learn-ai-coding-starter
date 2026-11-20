@@ -6,6 +6,8 @@ Each entry records what the lesson asked, what changed in this repo, and what to
 Workflow: after every passing lesson run, a new section is added here and pushed.
 See `AGENTS.md` for the rule, or run `/lesson-notes` to do it on demand.
 
+Chapter study guides (mental models, cheat sheets, self-tests) live in [`chapters/`](chapters/).
+
 ---
 
 ## 4.4 — Steering · 2026-11-19 · +326 XP

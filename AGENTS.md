@@ -39,6 +39,21 @@ When every step passes, write the notes and push:
 
 Run `/lesson-notes <lesson>` to do this on demand.
 
+## Chapter study guides
+
+When the user pastes a chapter's curriculum, turn it into a study guide at
+`notes/chapters/<kebab-case-title>.md`, then commit as `notes: <chapter title> chapter guide`
+and push to `origin main`. Each guide contains:
+
+1. A one-line thesis and a mental model or story that ties the chapter together.
+2. A cheat-sheet table of the concrete controls, commands, or rules.
+3. Deep notes on the parts that are easy to misremember.
+4. Pitfalls, ideally including ones observed in this project's own runs.
+5. A retention plan: spaced review schedule and active-recall questions with hidden answers.
+6. A short 中文摘要 and a mnemonic.
+
+Keep it readable in one sitting; the goal is review material, not a transcript.
+
 ## Conventions
 
 - `docs/spec.md` is the source of truth for language behavior; update it with any language change.
