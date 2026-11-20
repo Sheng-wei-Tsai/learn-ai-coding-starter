@@ -10,6 +10,47 @@ Chapter study guides (mental models, cheat sheets, self-tests) live in [`chapter
 
 ---
 
+## 4.6 — Queueing · 2026-11-20 · +128 XP
+
+**What the lesson asked:** `hallucinate(1 / 0)✨` crashed with a Python traceback. It had to become a
+SlopLang runtime error reading `division by zero`, keep the correct line number while preserving
+output printed before the failure, and ship with a test. The lesson's prompt-box skill was
+**queueing**: `Ctrl+X` then `Enter` holds a prompt until the running turn finishes, instead of
+`Enter` alone, which steers it.
+
+**What changed:**
+
+- `sloperator/evaluator/interpreter.py` — the `TokenType.SLASH` branch now checks the right operand
+  before calling `truncating_divide` and raises `SlopRuntimeError(operator.line, "division by
+  zero")`.
+- `tests/test_errors.py` — one parametrized row, `("hallucinate(1 / 0)✨", "runtime", 1, "division
+  by zero")`; suite 128 → 129.
+
+**Key takeaways**
+
+- `ZeroDivisionError` is not a `SlopError`, so it slipped straight through `run_program`'s
+  `except SlopError` and escaped as a traceback. The interpreter's contract is "only SlopLang
+  errors leave the evaluator" — every new arithmetic path has to uphold it.
+- The guard belongs in `binary`, not inside `truncating_divide`: only the caller holds the operator
+  token, and the diagnostic needs that token's line.
+- Ordering the guard after the numeric-operand check keeps `"a" / 0` a type error rather than
+  mislabelling it as division by zero — the first invalid thing wins.
+- A parametrized error-table test is the cheap way to pin kind, line, message, and exit code at
+  once. Because the table runs through `run_source`, an escaping Python exception fails the test
+  instead of hiding behind a caught error.
+- `Enter` while the agent works **steers**; `Ctrl+X` then `Enter` **queues**. Same key, two
+  intents — steering changes the current turn, queueing waits its turn.
+
+**中文摘要**
+
+`1 / 0` 之前抛出 Python 的 `ZeroDivisionError`，它不属于 `SlopError`，所以绕过 `run_program` 的
+捕获变成 traceback。修复方式是在 `binary` 的除法分支里先检查除数为零，用运算符所在行号抛出
+`SlopLang runtime error at line 1: division by zero`；放在调用处而不是 `truncating_divide`
+内部，是因为只有调用方持有 token 的行号。参数化错误测试表一次性校验类型、行号、消息和退出码。
+同时记住提示框的区别：agent 运行中按 `Enter` 是**转向**，`Ctrl+X` 再 `Enter` 才是**排队**。
+
+---
+
 ## 4.5 — The Prompt Box · 2026-11-20 · +328 XP
 
 **What the lesson asked:** create `examples/doubling.slop` that doubles the number 13 and prints
