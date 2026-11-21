@@ -10,6 +10,46 @@ Chapter study guides (mental models, cheat sheets, self-tests) live in [`chapter
 
 ---
 
+## 5.2 — Temperature · 2026-11-21 · +394 XP
+
+**What the lesson asked:** pick a model that accepts a temperature setting, set the model-level
+`body.temperature` to `0.9`, brainstorm five Sloperator slogans into `SLOGANS.md`, then lower the
+value to `0.1`. Then start a fresh session, ask for five more slogans, and compare.
+
+**What changed:**
+
+- `opencode.jsonc` — `model` already pointed at `opencode/deepseek-v4.1-flash-free`, so no model
+  switch was needed; added `providers.opencode.models."deepseek-v4.1-flash-free".body.temperature`,
+  set to `0.9` for the brainstorm and left at `0.1`.
+- `SLOGANS.md` — batch 1 (this session, 0.9), batch 2 (fresh child session, 0.1), and a comparison.
+
+**Key takeaways**
+
+- The temperature override belongs on the **model**, not the agent and not the provider:
+  `providers.<provider>.models.<id>.body` is what reaches the request. The agent-level
+  `request.body` is preserved for later but not sent yet, which is a silent no-op if you put it
+  there.
+- Config changes land on **new requests**, not the turn already running — so the `0.1` applies from
+  the next message, and the batch I generated at `0.9` never retroactively changes.
+- The comparison didn't isolate temperature. Batch 2's brief listed the language keywords and it
+  returned them; **prompt content dominated sampling settings**, which is the chapter-4 lesson
+  restated.
+- What low temperature actually changed was **form**: batch 2 kept one template (statement, comma,
+  resolution, ✨ — three of five) while varying nouns, where batch 1 used four shapes across five
+  lines. Diversity drops in structure before it drops in vocabulary.
+- A fresh session is the clean way to remove conversational anchoring — and the reason its output
+  needed a written brief. Isolation and amnesia are the same feature.
+
+**中文摘要**
+
+课程要求验证 temperature：把模型级 `body.temperature` 设为 0.9 生成五个口号，再降到 0.1 换新会话
+生成五个并比较。配置位置容易记错——要写在 `providers.<provider>.models.<id>.body`，agent 级
+`request.body` 目前不会真正发送。比较结果说明：低温度不只是"更保守"，更明显的表现是**结构趋同**
+（五条里三条同一个句式，只换名词）；而两批风格差异主要来自提示词里给的词汇表，说明提示词内容
+比采样参数更能决定输出。温度是方差旋钮，不是质量旋钮。
+
+---
+
 ## 4.8 — Speech to Text · 2026-11-20 · +128 XP
 
 **What the lesson asked:** create `examples/countdown.slop` from a *dictated* instruction —
