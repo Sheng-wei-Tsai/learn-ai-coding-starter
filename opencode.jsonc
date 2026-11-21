@@ -6,6 +6,7 @@
       "models": {
         "deepseek-v4.1-flash-free": {
           "body": {
+            "reasoning_effort": "none",
             "temperature": 0.1
           }
         }
