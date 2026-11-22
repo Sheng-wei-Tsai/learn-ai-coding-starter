@@ -10,6 +10,43 @@ Chapter study guides (mental models, cheat sheets, self-tests) live in [`chapter
 
 ---
 
+## 5.3 — Custom Agents · 2026-11-22 · +461 XP
+
+**What the lesson asked:** create `.opencode/agents/review.md` as a new **primary** agent with a
+review-focused system prompt and permissions that deny everything except `read`, `glob`, and `grep`.
+
+**What changed:**
+
+- `.opencode/agents/review.md` — frontmatter with `description`, `mode: primary`, and four permission
+  rules; body is the review checklist (bugs, tradeoffs, suggestions without edits, quality,
+  performance, security).
+- Permissions start with a catch-all `action: "*"` deny, then allow `read`, `glob`, and `grep`.
+
+**Key takeaways**
+
+- The lesson's example only denied `edit` and `shell`, which still leaves `webfetch`, `websearch`,
+  `skill`, and `subagent` open. "Deny all except three" needs an explicit `"*"` deny first — the
+  example and the requirement are not the same thing, and the requirement wins.
+- Order is the whole mechanism: rules are last-match-wins, so the broad deny must come first and the
+  three allows after it. Same rule as the shell permissions in `opencode.jsonc`.
+- `mode: primary` makes it a session you switch into, not something the main agent launches. A
+  subagent version would be `mode: subagent` and would need a `description` the parent model can read
+  to choose it.
+- Denying `shell` also denies `git diff`, so this agent reviews the working tree as it stands, not
+  uncommitted changes. If diff review matters, allow `git diff *` after the deny.
+- A read-only agent is a *review* tool, not a *fix* tool: it can point at the bug but can't touch it,
+  which keeps the review honest and the diff empty.
+
+**中文摘要**
+
+创建 `.opencode/agents/review.md` 作为新的 primary agent：系统提示词负责评审清单（bug、权衡、
+只建议不修改、代码质量、性能、安全），权限只允许 `read`、`glob`、`grep`。课程示例只 deny 了
+`edit` 和 `shell`，但那样 `webfetch`、`websearch`、`skill`、`subagent` 仍然可用，所以先加一条
+`action: "*"` 的 deny，再放行三个只读动作——权限规则是**最后匹配生效**，顺序不能反。另外 deny
+`shell` 也意味着不能用 `git diff`，这个 agent 只能看工作区现状。
+
+---
+
 ## 5.2 — Temperature · 2026-11-21 · +394 XP
 
 **What the lesson asked:** pick a model that accepts a temperature setting, set the model-level
