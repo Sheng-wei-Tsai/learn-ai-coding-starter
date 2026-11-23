@@ -13,7 +13,10 @@ Chapter study guides (mental models, cheat sheets, self-tests) live in [`chapter
 ## 5.6 — Task Permissions · 2026-11-23 · +132 XP
 
 **What the lesson asked:** add a project-level permission rule that denies the `subagent` action for
-the `explore` resource, then confirm the child agent can no longer be launched.
+the `explore` resource, then confirm the child agent can no longer be launched. The lesson's fuller
+example shows the general shape: a catch-all `subagent` deny, then narrower exceptions — a glob
+resource like `orchestrator-*` to allow a family of subagents, and `code-reviewer` with `effect: "ask"`
+to require approval.
 
 **What changed:**
 
@@ -23,10 +26,16 @@ the `explore` resource, then confirm the child agent can no longer be launched.
 **Key takeaways**
 
 - Permissions are last-match-wins, so the deny has to sit *after* any broader allow that would cover it.
-  Appending is the safe default; inserting above a wildcard allow silently does nothing.
-- The rule is scoped by `resource`, not by caller. It blocks autonomous delegation and manual
-  `@explore` alike — there is no "only when the model decides" variant. If you want manual use to
-  survive, that is a different design, not a different rule.
+  Appending is the safe default; inserting above a wildcard allow silently does nothing. The lesson's
+  example depends on this: the `"*"` deny comes first, then the exceptions override it.
+- `resource` is a pattern, not just a name. `orchestrator-*` matches any subagent ID with that prefix,
+  which is how you allow a whole family without listing each one.
+- `effect` has three values, and `ask` is the middle ground: `deny` blocks outright, `allow` runs
+  silently, `ask` pauses for approval. Use `ask` when the subagent is legitimate but expensive or
+  consequential.
+- These rules govern what an agent can invoke *automatically*. They do not stop you from launching a
+  subagent yourself through the UI — so a deny is a guardrail on the model, not a hard security
+  boundary against the human.
 - The failure mode is clean: the tool call returns `Permission denied: subagent` and no child session
   starts. Worth verifying by actually attempting the call rather than trusting the config file — a
   typo'd action name would leave the file looking correct and the permission open.
@@ -38,8 +47,11 @@ the `explore` resource, then confirm the child agent can no longer be launched.
 
 在 `opencode.jsonc` 的 `permissions` 数组末尾追加
 `{ "action": "subagent", "resource": "explore", "effect": "deny" }`，禁止 `explore` 子 agent。
-权限规则是**最后匹配生效**，所以 deny 必须放在更宽的 allow 之后，直接追加最安全。这条规则按
-`resource` 生效，不区分调用方：自动委派和手动 `@explore` 都会被拦。实际调用一次确认返回
+课程示例展示了完整写法：先一条 `"*"` 的 deny 兜底，再用 `orchestrator-*` 这样的通配 resource
+放行一族子 agent，用 `code-reviewer` + `effect: "ask"` 要求审批。权限规则是**最后匹配生效**，
+所以 deny 必须放在更宽的 allow 之前、例外放在之后。`effect` 有三种：`deny` 直接拒绝、`allow`
+静默放行、`ask` 暂停等待批准。这些规则只约束 agent 的**自动**调用，不阻止你在 UI 里手动启动
+subagent——所以它是给模型的护栏，不是对人的安全边界。实际调用一次确认返回
 `Permission denied: subagent`、子会话没有启动——只看配置文件不够，action 名字打错的话文件看起来
 依然正确。禁止 subagent 往往是为了把工作留在主会话里可见，而不只是出于安全考虑。
 
