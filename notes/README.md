@@ -10,6 +10,39 @@ Chapter study guides (mental models, cheat sheets, self-tests) live in [`chapter
 
 ---
 
+## 5.4 — Max Steps · 2026-11-23 · +330 XP
+
+**What the lesson asked:** cap how many agentic steps a custom agent can take by setting `steps` in
+its frontmatter, so a runaway agent stops instead of looping.
+
+**What changed:**
+
+- `.opencode/agents/review.md` — added `steps: 2` to the frontmatter, directly after `mode: primary`.
+  The review agent now gets two steps (one tool call plus the final answer) before it is cut off.
+
+**Key takeaways**
+
+- `steps` is a per-agent budget on agentic turns, not on tool calls inside a turn. A step is one
+  model turn that may issue tool calls; the final text answer is the last step. So `steps: 2` means
+  "one round of tools, then answer" — enough for a single read, not enough for a multi-file sweep.
+- The budget is a guardrail against loops, not a quality setting. Too low and the agent answers from
+  partial context; too high and a confused agent can burn tokens wandering. Pick it from the shape of
+  the task, not from a default.
+- It pairs naturally with the read-only permission set from 5.3: a review agent that can't edit and
+  can't loop is cheap to run and safe to leave unattended.
+- The lesson's check is behavioral, not textual — it verifies the agent actually stops after two
+  steps, so a typo'd key would fail even though the file "looks" right.
+
+**中文摘要**
+
+在 `.opencode/agents/review.md` 的 frontmatter 里加上 `steps: 2`，限制这个 agent 最多走两步。
+`steps` 限制的是 agent 的轮次（一次模型回合，可以包含工具调用），不是工具调用次数；最后输出答案
+也算一步。所以 `steps: 2` 等于"先调一轮工具，再给结论"。它是防止 agent 死循环的护栏，不是质量
+旋钮：设太小会基于不完整上下文作答，设太大则可能空转烧 token。配合 5.3 的只读权限，这个评审
+agent 既不能改代码也不会无限循环。
+
+---
+
 ## 5.3 — Custom Agents · 2026-11-22 · +461 XP
 
 **What the lesson asked:** create `.opencode/agents/review.md` as a new **primary** agent with a
