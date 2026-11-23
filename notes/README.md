@@ -10,6 +10,41 @@ Chapter study guides (mental models, cheat sheets, self-tests) live in [`chapter
 
 ---
 
+## 5.5 — Subagents · 2026-11-23 · +198 XP
+
+**What the lesson asked:** use a subagent to find a `LexicalError` path with no regression test, then
+add that test in a new file.
+
+**What changed:**
+
+- `tests/test_lexer_regression.py` — new file with two tests for the `unterminated string` error raised
+  at `scanner.py:127` (trailing backslash at EOF): one at the `tokenize` level, one end-to-end through
+  `run_source` asserting the exact stderr line and exit code 1.
+
+**Key takeaways**
+
+- The subagent's headline answer was wrong: it reported "uncovered messages: none", which contradicted
+  the task premise. Its own caveats section contained the real finding. Read the caveats, not just the
+  summary — a subagent that answers "nothing to do" is a signal to check its reasoning, not to stop.
+- The gap was not a missing *message* but a missing *site*. `unterminated string` is raised from two
+  places in the scanner; only the EOF/newline one was tested through the runner. Coverage by message
+  string hides duplicate raise sites.
+- Test at the boundary the user sees. A lexer-level test proves the exception is raised; a
+  `run_source` test proves it is caught and formatted instead of escaping as a traceback. Both are
+  cheap, so keep both.
+- Delegating the search was still worth it: enumerating 12 raise sites and cross-checking every test
+  file is mechanical work that would have eaten main-context budget.
+
+**中文摘要**
+
+用 subagent 找出没有回归测试的 `LexicalError` 路径，再新建测试文件补上。subagent 的结论
+"没有未覆盖的消息" 与任务前提矛盾，真正的线索藏在它自己的 caveats 里：`unterminated string`
+在 scanner 里有两个抛出点，只有 EOF/换行那个有端到端测试，行尾反斜杠那个没有。所以新建
+`tests/test_lexer_regression.py`，一个测 `tokenize` 层，一个测 `run_source` 层（断言 stderr 和
+退出码）。教训：按消息字符串统计覆盖率会掩盖重复的抛出点；subagent 说"没事可做"时要看它的推理过程。
+
+---
+
 ## 5.4 — Max Steps · 2026-11-23 · +330 XP
 
 **What the lesson asked:** cap how many agentic steps a custom agent can take by setting `steps` in
