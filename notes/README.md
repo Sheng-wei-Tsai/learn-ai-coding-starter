@@ -10,6 +10,41 @@ Chapter study guides (mental models, cheat sheets, self-tests) live in [`chapter
 
 ---
 
+## 5.6 — Task Permissions · 2026-11-23 · +132 XP
+
+**What the lesson asked:** add a project-level permission rule that denies the `subagent` action for
+the `explore` resource, then confirm the child agent can no longer be launched.
+
+**What changed:**
+
+- `opencode.jsonc` — appended `{ "action": "subagent", "resource": "explore", "effect": "deny" }` to
+  the `permissions` array, after the existing `shell` and `run_slop` rules.
+
+**Key takeaways**
+
+- Permissions are last-match-wins, so the deny has to sit *after* any broader allow that would cover it.
+  Appending is the safe default; inserting above a wildcard allow silently does nothing.
+- The rule is scoped by `resource`, not by caller. It blocks autonomous delegation and manual
+  `@explore` alike — there is no "only when the model decides" variant. If you want manual use to
+  survive, that is a different design, not a different rule.
+- The failure mode is clean: the tool call returns `Permission denied: subagent` and no child session
+  starts. Worth verifying by actually attempting the call rather than trusting the config file — a
+  typo'd action name would leave the file looking correct and the permission open.
+- Denying a subagent is a context-budget decision as much as a safety one. `explore` is cheap and
+  read-only, so the usual reason to block it is to force the work into the main session where you can
+  see it, not to prevent damage.
+
+**中文摘要**
+
+在 `opencode.jsonc` 的 `permissions` 数组末尾追加
+`{ "action": "subagent", "resource": "explore", "effect": "deny" }`，禁止 `explore` 子 agent。
+权限规则是**最后匹配生效**，所以 deny 必须放在更宽的 allow 之后，直接追加最安全。这条规则按
+`resource` 生效，不区分调用方：自动委派和手动 `@explore` 都会被拦。实际调用一次确认返回
+`Permission denied: subagent`、子会话没有启动——只看配置文件不够，action 名字打错的话文件看起来
+依然正确。禁止 subagent 往往是为了把工作留在主会话里可见，而不只是出于安全考虑。
+
+---
+
 ## 5.5 — Subagents · 2026-11-23 · +198 XP
 
 **What the lesson asked:** use a subagent to find a `LexicalError` path with no regression test, then
