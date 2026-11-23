@@ -13,7 +13,9 @@ Chapter study guides (mental models, cheat sheets, self-tests) live in [`chapter
 ## 5.5 — Subagents · 2026-11-23 · +198 XP
 
 **What the lesson asked:** use a subagent to find a `LexicalError` path with no regression test, then
-add that test in a new file.
+add that test in a new file. The lesson frames subagents as isolated child sessions that the primary
+agent can spin off concurrently — built-in `general` (multi-step research and execution) and `explore`
+(fast, read-only codebase/web search) — invoked autonomously as a tool or manually with `@explore …`.
 
 **What changed:**
 
@@ -23,6 +25,14 @@ add that test in a new file.
 
 **Key takeaways**
 
+- The point of a subagent is **isolation**, not delegation for its own sake. Every search, command, and
+  intermediate thought stays in the child session; only the summary comes back. That is what keeps the
+  parent's context clean enough to reason with.
+- The three benefits are separable and you should pick the subagent type for the one you want:
+  isolation (context hygiene), cost (the child can run a cheaper model), and speed (background calls run
+  in parallel while the parent keeps working; foreground calls block).
+- `explore` is read-only by design, so it is the right default for "go find X and summarize". Reach for
+  `general` only when the child must actually change something.
 - The subagent's headline answer was wrong: it reported "uncovered messages: none", which contradicted
   the task premise. Its own caveats section contained the real finding. Read the caveats, not just the
   summary — a subagent that answers "nothing to do" is a signal to check its reasoning, not to stop.
@@ -37,7 +47,11 @@ add that test in a new file.
 
 **中文摘要**
 
-用 subagent 找出没有回归测试的 `LexicalError` 路径，再新建测试文件补上。subagent 的结论
+subagent 是主 agent 可以并发派生的专用子会话，内置 `general`（多步研究与执行）和 `explore`
+（快速只读的代码库/网页探索），既能由主 agent 自动调用，也能用 `@explore …` 手动触发。核心价值是
+**隔离**：搜索、命令、中间思考都留在子会话里，只有结论回到主会话，主上下文因此保持干净。三个好处
+可以分开看——隔离（上下文卫生）、成本（子会话可用更便宜的模型）、速度（后台调用并行，前台调用阻塞）。
+本课用 subagent 找出没有回归测试的 `LexicalError` 路径，再新建测试文件补上。subagent 的结论
 "没有未覆盖的消息" 与任务前提矛盾，真正的线索藏在它自己的 caveats 里：`unterminated string`
 在 scanner 里有两个抛出点，只有 EOF/换行那个有端到端测试，行尾反斜杠那个没有。所以新建
 `tests/test_lexer_regression.py`，一个测 `tokenize` 层，一个测 `run_source` 层（断言 stderr 和
