@@ -10,6 +10,37 @@ Chapter study guides (mental models, cheat sheets, self-tests) live in [`chapter
 
 ---
 
+## 6.2 — Context As RAM · 2026-11-25 · +333 XP
+
+**What the lesson asked:** fix comment-related line tracking in the lexer and add a regression
+test so `— a comment\n@` reports a lexical error on line 2, not line 1.
+
+**What changed:**
+
+- `sloperator/lexer/scanner.py` — removed the comment branch's newline consumption. The regular
+  newline handler now increments the line counter, including after consecutive comments.
+- `tests/test_lexer.py` — added the exact reproducer to the lexical-error cases, checking the
+  line number, message, and formatted error. Confirmed it failed before the fix.
+- Validation: all 133 tests, formatting, lint, and type checks passed. The submitted lesson
+  passed all three checks, including consecutive comments and blank lines.
+
+**Key takeaways**
+
+- Treat context as working memory: provide the exact reproducer, expected behavior, and relevant
+  file paths so the agent can focus on the bug rather than reconstructing the task.
+- Keep newline accounting in one place. Consuming a newline elsewhere can silently bypass the
+  line counter and corrupt later diagnostics.
+- A regression test should assert the reported location, not merely that an exception occurs.
+  Watching it fail before the fix confirms that it detects the original bug.
+
+**中文摘要**
+
+注释分支吞掉换行却没有增加行号，导致下一行的 `@` 被误报在第 1 行。删除该分支的换行消费，
+交给统一的换行逻辑处理，并加入先失败、修复后通过的回归测试。精确的复现输入、预期结果和
+文件路径能帮助 agent 有效利用上下文；本课提交通过，获得 333 XP。
+
+---
+
 ## 5.6 — Task Permissions · 2026-11-23 · +132 XP
 
 **What the lesson asked:** add a project-level permission rule that denies the `subagent` action for
