@@ -12,8 +12,10 @@ Chapter study guides (mental models, cheat sheets, self-tests) live in [`chapter
 
 ## 6.2 — Context As RAM · 2026-11-25 · +333 XP
 
-**What the lesson asked:** fix comment-related line tracking in the lexer and add a regression
-test so `— a comment\n@` reports a lexical error on line 2, not line 1.
+**What the lesson asked:** treat the model's context window as working memory, like RAM: give the
+agent relevant task details without bloating its input with unrelated information. The practical
+exercise was to fix comment-related line tracking and add a regression test so `— a comment\n@`
+reports a lexical error on line 2, not line 1.
 
 **What changed:**
 
@@ -26,18 +28,27 @@ test so `— a comment\n@` reports a lexical error on line 2, not line 1.
 
 **Key takeaways**
 
-- Treat context as working memory: provide the exact reproducer, expected behavior, and relevant
-  file paths so the agent can focus on the bug rather than reconstructing the task.
-- Keep newline accounting in one place. Consuming a newline elsewhere can silently bypass the
-  line counter and corrupt later diagnostics.
-- A regression test should assert the reported location, not merely that an exception occurs.
-  Watching it fail before the fix confirms that it detects the original bug.
+- **Context is working memory, not an archive.** Like hoarding browser tabs, retaining unrelated
+  information uses capacity without helping the current task.
+- The lesson's token-generation model is `input tokens → model → next token`. Irrelevant input
+  can make inference slower and more expensive, confuse the model, and increase bad responses.
+- Reading files, fetching web content, and using tools add data—or sometimes summaries—to
+  context. Tool output is part of the memory budget, not free background activity.
+- In the lesson's OpenCode interface, the right-hand sidebar's **Context** section shows usage
+  in tokens and as a percentage of the model's maximum context window.
+- **Optimize relevance, not just brevity.** Agents can discover files and folders, but a useful
+  prompt still supplies the details needed for the task, just as when briefing a coworker.
+  Here, the reproducer, expected line number, scanner path, and regression-test path were relevant.
+- Exercise-specific lesson: keep newline accounting in one place and assert diagnostic locations
+  in regression tests. Watching the new test fail before the fix established that it caught the bug.
 
 **中文摘要**
 
-注释分支吞掉换行却没有增加行号，导致下一行的 `@` 被误报在第 1 行。删除该分支的换行消费，
-交给统一的换行逻辑处理，并加入先失败、修复后通过的回归测试。精确的复现输入、预期结果和
-文件路径能帮助 agent 有效利用上下文；本课提交通过，获得 333 XP。
+把 context window 当作 RAM：它是当前任务的工作记忆，不是所有资料的仓库。读文件、抓网页、
+使用工具都会把内容或摘要放进上下文；无关信息会增加延迟和成本，也可能干扰回答。课程中的
+OpenCode 右侧 Context 区显示 token 用量及占上限的百分比。提示词要追求相关性，而不只是短：
+像交代任务给同事一样，给足复现步骤、预期行为和相关路径，省略无关故事。本次练习修复了注释
+吞掉换行导致行号错误的问题，并用回归测试验证；提交通过，获得 333 XP。
 
 ---
 
