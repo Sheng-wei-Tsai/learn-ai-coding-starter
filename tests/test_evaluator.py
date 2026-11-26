@@ -189,6 +189,29 @@ hallucinate(hallucinate)✨"""
     assert run(source) == "0\n-42\nstr\n✅\n❌\nnil\n<clanker f>\n<clanker hallucinate>\n"
 
 
+@pytest.mark.parametrize(
+    ("arguments", "expected"),
+    [
+        ("", "\n"),
+        ("42", "42\n"),
+        ("“hello”, “world”", "hello world\n"),
+        (
+            "0, -42, “str”, ✅, ❌, f(), f, hallucinate",
+            "0 -42 str ✅ ❌ nil <clanker f> <clanker hallucinate>\n",
+        ),
+        ("“”, “”, “end”", "  end\n"),
+    ],
+)
+def test_hallucinate_accepts_any_number_of_arguments(arguments: str, expected: str):
+    assert run(f"clanker f() {{ }}\nhallucinate({arguments})✨") == expected
+
+
+def test_hallucinate_returns_nil_with_zero_or_multiple_arguments():
+    assert run("hallucinate(hallucinate())✨\nhallucinate(hallucinate(1, 2))✨") == (
+        "\nnil\n1 2\nnil\n"
+    )
+
+
 def test_variation_selector_after_emoji_is_accepted():
     assert run("hallucinate(✅️)✨️\nhallucinate(❌️)✨️") == "✅\n❌\n"
 
