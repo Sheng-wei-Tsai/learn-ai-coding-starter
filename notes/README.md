@@ -10,6 +10,43 @@ Chapter study guides (mental models, cheat sheets, self-tests) live in [`chapter
 
 ---
 
+## 6.5 — File Watcher · 2026-11-27
+
+**What the lesson asked:** understand that OpenCode watches the filesystem so it can reload
+watched skills and plugins while running, that watching cannot merge conflicting edits, and that
+`watcher.ignore` in `opencode.jsonc` suppresses events for matching paths without stopping the
+agent from searching or reading them. The lesson also advises leaving the option alone unless
+watcher noise is actually a problem.
+
+**What changed:**
+
+- `opencode.jsonc` — added `"watcher": { "ignore": ["logs/**"] }` so playground run logs stop
+  producing filesystem events. The pattern is root-relative, matching where the playground writes
+  (`<root>/logs/runs.log`).
+- Validation: the file still parses as JSONC after stripping comments, and the `watcher` block
+  reads back as `{"ignore": ["logs/**"]}`.
+
+**Key takeaways**
+
+- The watcher is a live-reload mechanism for skills and plugins, not a safety net for edits. Two
+  writers touching the same file can still conflict, and edit tools fail when their expected text
+  has moved — review the diff whenever you and an agent share a file.
+- `watcher.ignore` is orthogonal to `.gitignore` and `.ignore`: it filters filesystem events only.
+  The agent can still search and read those paths, so it is not a privacy or context control.
+- Patterns are globs relative to the project root, and `**` is needed to cover nested files.
+- Config is read at startup, so a watcher change applies on the next session, not immediately.
+- Default to not touching this option. Add entries only for paths that genuinely churn, like
+  rebuild artifacts or append-only logs.
+
+**中文摘要**
+
+本课讲 OpenCode 的文件监视器：它监听文件变化以便热重载 skills 和插件，但无法合并冲突编辑，
+所以与 agent 同时改同一文件时要看 diff。`opencode.jsonc` 里的 `watcher.ignore` 只屏蔽文件系统
+事件，不影响 agent 搜索或读取这些文件，因此不是隐私或上下文控制手段。本次为 playground 日志
+加入 `logs/**`。配置在启动时读取，需重启会话生效；除非确实遇到监视噪音，否则不建议改动此项。
+
+---
+
 ## 6.4 — Ignoring Files · 2026-11-27 · +405 XP
 
 **What the lesson asked:** keep noisy files out of the agent's context. OpenCode's content
