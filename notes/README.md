@@ -10,7 +10,7 @@ Chapter study guides (mental models, cheat sheets, self-tests) live in [`chapter
 
 ---
 
-## 6.5 — File Watcher · 2026-11-27
+## 6.5 — File Watcher · 2026-11-27 · +136 XP
 
 **What the lesson asked:** understand that OpenCode watches the filesystem so it can reload
 watched skills and plugins while running, that watching cannot merge conflicting edits, and that
@@ -24,7 +24,8 @@ watcher noise is actually a problem.
   producing filesystem events. The pattern is root-relative, matching where the playground writes
   (`<root>/logs/runs.log`).
 - Validation: the file still parses as JSONC after stripping comments, and the `watcher` block
-  reads back as `{"ignore": ["logs/**"]}`.
+  reads back as `{"ignore": ["logs/**"]}`. The submitted lesson passed its check (playground logs
+  are excluded from the file watcher) and awarded 136 XP.
 
 **Key takeaways**
 
@@ -44,6 +45,7 @@ watcher noise is actually a problem.
 所以与 agent 同时改同一文件时要看 diff。`opencode.jsonc` 里的 `watcher.ignore` 只屏蔽文件系统
 事件，不影响 agent 搜索或读取这些文件，因此不是隐私或上下文控制手段。本次为 playground 日志
 加入 `logs/**`。配置在启动时读取，需重启会话生效；除非确实遇到监视噪音，否则不建议改动此项。
+课程检查通过，获得 136 XP。
 
 ---
 
