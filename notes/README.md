@@ -10,6 +10,43 @@ Chapter study guides (mental models, cheat sheets, self-tests) live in [`chapter
 
 ---
 
+## 6.4 — Ignoring Files · 2026-11-27
+
+**What the lesson asked:** keep noisy files out of the agent's context. OpenCode's content
+searches use ripgrep, which honors `.gitignore` by default, so generated output, dependency
+trees, large logs, and binary blobs should be ignored the normal way. When a path needs to be
+searchable despite `.gitignore`, or excluded without changing what Git tracks, add a `.ignore`
+file at the project root.
+
+**What changed:**
+
+- `.gitignore` — added `logs/`. The playground writes run history to `<project root>/logs/runs.log`
+  (`playground/server.py`), so the entry sits at the repo root rather than under `playground/`.
+- `.ignore` — new file containing `uv.lock`, so ripgrep-based searches skip the ~16 KB lockfile
+  while Git keeps tracking it.
+- Validation: `git check-ignore -v logs/runs.log` reports the new rule, and `git ls-files uv.lock`
+  still lists the lockfile.
+
+**Key takeaways**
+
+- `.gitignore` is the default lever: it shapes both what Git tracks and what ripgrep searches,
+  so ordinary hygiene (`.venv/`, caches, logs) covers most context bloat.
+- `.ignore` is the escape hatch. It only affects search tools, never Git, which makes it the right
+  place for files that must stay committed but are noise to read.
+- Ignoring is a hint, not a wall: explicit file patterns can override exclusions, and the agent
+  can still open an ignored file directly when it genuinely needs to.
+- Put the pattern where the file actually lives. The playground's log path resolves to the project
+  root, so `logs/` at the root is correct and `playground/logs/` would have been wrong.
+
+**中文摘要**
+
+本课讲如何避免无关文件撑爆上下文：ripgrep 默认遵守 `.gitignore`，所以构建产物、依赖目录、
+大日志和二进制文件照常忽略即可。若想让被 `.gitignore` 覆盖的路径仍可被搜索，或想排除某文件
+但不影响 Git 跟踪，就在项目根目录建 `.ignore`。本次在 `.gitignore` 加入 `logs/`（playground
+的日志实际写在项目根目录），并新建 `.ignore` 写入 `uv.lock`，让搜索跳过锁文件而 Git 继续跟踪。
+
+---
+
 ## 6.3 — New Sessions · 2026-11-26 · +335 XP
 
 **What the lesson asked:** allow `hallucinate` to accept any number of arguments, print
