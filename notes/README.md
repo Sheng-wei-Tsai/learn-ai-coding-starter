@@ -10,7 +10,7 @@ Chapter study guides (mental models, cheat sheets, self-tests) live in [`chapter
 
 ---
 
-## 6.4 — Ignoring Files · 2026-11-27
+## 6.4 — Ignoring Files · 2026-11-27 · +405 XP
 
 **What the lesson asked:** keep noisy files out of the agent's context. OpenCode's content
 searches use ripgrep, which honors `.gitignore` by default, so generated output, dependency
@@ -25,7 +25,9 @@ file at the project root.
 - `.ignore` — new file containing `uv.lock`, so ripgrep-based searches skip the ~16 KB lockfile
   while Git keeps tracking it.
 - Validation: `git check-ignore -v logs/runs.log` reports the new rule, and `git ls-files uv.lock`
-  still lists the lockfile.
+  still lists the lockfile. The submitted lesson passed all three checks (Git ignores playground
+  logs, the lockfile is excluded from ordinary search, Git still tracks the lockfile) and awarded
+  405 XP.
 
 **Key takeaways**
 
@@ -44,6 +46,7 @@ file at the project root.
 大日志和二进制文件照常忽略即可。若想让被 `.gitignore` 覆盖的路径仍可被搜索，或想排除某文件
 但不影响 Git 跟踪，就在项目根目录建 `.ignore`。本次在 `.gitignore` 加入 `logs/`（playground
 的日志实际写在项目根目录），并新建 `.ignore` 写入 `uv.lock`，让搜索跳过锁文件而 Git 继续跟踪。
+课程三项检查全部通过，获得 405 XP。
 
 ---
 
