@@ -10,6 +10,32 @@ Chapter study guides (mental models, cheat sheets, self-tests) live in [`chapter
 
 ---
 
+## 6.7 — Lost in the Middle · 2026-11-27 · +136 XP
+
+**What the lesson asked:** Put the goal and key constraints up front. The *Lost in the
+Middle* study found that models often retrieve information better from the beginning or
+end of a long context than from its middle.
+
+**What changed:** `README.md` is now 32 lines, with all `uv run` commands on lines
+8–19. It links to `docs/spec.md` for the language specification. The example ran and
+passed syntax checking; all 139 tests, formatting, lint, and type checks passed.
+The submitted lesson passed all three README checks and awarded 136 XP.
+
+**Key takeaways**
+
+- A large context window doesn't guarantee that every part gets used equally well.
+  The effect varies by model and task, and fact retrieval differs from instruction following.
+- In long prompts and reusable templates, state the goal and must-follow constraints
+  first. Put supporting material after them, and consider a short reminder at the end.
+
+**中文摘要**
+
+模型在長上下文中，通常較容易找回開頭或結尾的資訊；效果因模型與任務而異，找資料也不同於遵循指令。
+撰寫長提示時，先列目標和關鍵限制，必要時在結尾簡短提醒。本次將執行與驗證指令移到 README 前 20 行，
+語言規格則直接連到 `docs/spec.md`。課程三項檢查全部通過，獲得 136 XP。
+
+---
+
 ## 6.5 — File Watcher · 2026-11-27 · +136 XP
 
 **What the lesson asked:** understand that OpenCode watches the filesystem so it can reload
