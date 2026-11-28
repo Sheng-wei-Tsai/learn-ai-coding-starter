@@ -10,6 +10,54 @@ Chapter study guides (mental models, cheat sheets, self-tests) live in [`chapter
 
 ---
 
+## 6.9 — Configure Compaction · 2026-11-28 · +336 XP
+
+**What the lesson asked:** Enable automatic compaction, retain 10,000 recent tokens,
+and reserve a 20,000-token buffer.
+
+**What changed:** `opencode.jsonc` now sets `compaction.auto` to `true`,
+`compaction.keep.tokens` to `10000`, and `compaction.buffer` to `20000`.
+The Boot.dev submission passed and awarded 336 XP.
+
+**Key takeaways**
+
+- `keep.tokens` controls how much recent conversation stays alongside the summary.
+- `buffer` is the amount of context to leave free; a larger buffer triggers
+  automatic compaction earlier.
+
+**中文摘要**
+
+本課在 `opencode.jsonc` 啟用自動濃縮，讓摘要保留約 10,000 個 token 的近期對話，
+並預留 20,000 個 token 的上下文空間。課程檢查通過，獲得 336 XP。
+
+---
+
+## 6.8 — Compaction · 2026-11-27
+
+**What the lesson asked:** Understand how OpenCode keeps long sessions going. A raw
+model API can reject an oversized request; OpenCode automatically compacts the
+session as it approaches the model's context limit.
+
+**What changed:** Added these notes in `notes/README.md`; this lesson did not require
+an interpreter or configuration change.
+
+**Key takeaways**
+
+- Compaction is lossy. OpenCode continues with a summary and some recent context.
+  Earlier messages are still saved on disk, but details omitted from the summary
+  may no longer be in the model's active context.
+- Use `/compact` to compact manually at a natural checkpoint, such as after finishing
+  a task. Tell it what to preserve: the goal, key files, constraints, decisions,
+  failed attempts, and the next step.
+
+**中文摘要**
+
+OpenCode 接近模型的上下文上限時，會自動將對話濃縮成摘要，並保留部分近期內容。
+舊訊息仍存在磁碟上，但省略的細節可能不再出現在模型的上下文中。完成一個階段後，
+可用 `/compact` 手動濃縮，並指定要保留的目標、限制、決策與下一步。
+
+---
+
 ## 6.7 — Lost in the Middle · 2026-11-27 · +136 XP
 
 **What the lesson asked:** Put the goal and key constraints up front. The *Lost in the
