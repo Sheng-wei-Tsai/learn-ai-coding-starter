@@ -10,6 +10,30 @@ Chapter study guides (mental models, cheat sheets, self-tests) live in [`chapter
 
 ---
 
+## 6.12 — Secrets in Context · 2026-11-28 · +138 XP
+
+**What the lesson asked:** Block reads of environment files and verify that
+OpenCode denies a `read` tool request for `.env`.
+
+**What changed:** Appended a `read` permission with resource `*.env` and
+effect `deny` in `opencode.jsonc`. The `read` tool returned `Permission denied:
+read` without returning file contents. Boot.dev passed its check and awarded
+138 XP.
+
+**Key takeaways**
+
+- OpenCode uses the last matching permission rule. Putting the specific deny
+  at the end of the project list gives it precedence over earlier matching rules.
+- This rule applies to the `read` tool for paths ending in `.env`. Verify
+  enforcement by checking the tool's response without printing the file.
+
+**中文摘要**
+
+在 `opencode.jsonc` 新增規則，拒絕 `read` 工具讀取符合 `*.env` 的路徑。
+測試讀取 `.env` 時確認權限遭拒，未回傳檔案內容；課程檢查通過，獲得 138 XP。
+
+---
+
 ## 6.11 — Forking · 2026-11-28 · +138 XP
 
 **What the lesson asked:** Continue from a forked session and add a regression test
