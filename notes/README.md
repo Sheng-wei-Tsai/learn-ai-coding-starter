@@ -10,6 +10,34 @@ Chapter study guides (mental models, cheat sheets, self-tests) live in [`chapter
 
 ---
 
+## 7.1 — AGENTS.md · 2026-11-28 · +207 XP
+
+**What the lesson asked:** Put recurring project instructions in `AGENTS.md` so
+OpenCode loads them at the start of new sessions.
+
+**What changed:** Condensed the existing `AGENTS.md` and verified its guidance
+against the repo. It now includes focused test and type-check commands, the
+runner API, the playground log path, and the OpenCode `run_slop` entry point.
+It retains the Boot.dev submission and notes workflow. Boot.dev confirmed the
+project instructions exist and awarded 207 XP. All 142 local tests and the
+formatting, lint, and type checks passed.
+
+**Key takeaways**
+
+- Put shared project instructions in the repo and personal defaults in
+  `~/.config/opencode/AGENTS.md`. OpenCode combines discovered instructions
+  from the working directory's ancestors with global guidance.
+- Use short, concrete instructions tied to the repo. Add good and bad examples
+  when they clarify a rule an agent would otherwise misread.
+- `CLAUDE.md` imports `AGENTS.md` here so the project guidance has one source.
+
+**中文摘要**
+
+將專案的常用指示放在 `AGENTS.md`，個人偏好則放在全域設定。這次精簡專案指示，
+補上單項測試指令、執行入口及日誌路徑，並保留課程提交流程。課程檢查通過，獲得 207 XP。
+
+---
+
 ## 6.12 — Secrets in Context · 2026-11-28 · +138 XP
 
 **What the lesson asked:** Block reads of environment files and verify that

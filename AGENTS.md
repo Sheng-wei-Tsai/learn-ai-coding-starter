@@ -1,61 +1,40 @@
 # learn-ai-coding-starter
 
-SlopLang interpreter built while following Boot.dev's **Learn AI Coding** course.
+## Run and verify
 
-- `origin` — this repo (personal, published).
-- `upstream` — `bootdotdev/learn-ai-coding-starter` (course starter; never push to it).
+- Use `uv` from the repo root; `.python-version` pins Python 3.13.
+  `uv.lock` is Git-tracked but excluded from ordinary search by `.ignore`.
+- Run: `uv run sloperator.py examples/hello.slop`. Insert `--check` before the filename to tokenize and parse without evaluating.
+- Focused test: `uv run pytest -q tests/test_evaluator.py -k <pattern>`.
+  Full checks: `uv run pytest -q`, `uv run ruff format --check`, `uv run ruff check`, `uv run ty check`.
 
-## Stack and commands
+## Interpreter and playground
 
-Python 3.13 managed by `uv`, no third-party runtime dependencies.
-
-- Test: `uv run pytest -q`
-- Format check: `uv run ruff format --check`
-- Lint: `uv run ruff check`
-- Run a program: `uv run sloperator.py examples/hello.slop`
-
-Layout: `sloperator/{lexer,parser,evaluator}/`, `sloperator/runner.py`, `tests/`, `examples/`,
-`docs/spec.md`, `notes/`.
+- `sloperator.py` delegates to `sloperator/runner.py`. Use `run_source()` for end-to-end
+  language tests: it runs lexer → parser → evaluator and returns `stdout`, `stderr`,
+  and `exit_code` without a subprocess.
+- `docs/spec.md` defines language behavior; update it and add tests for language changes.
+  `tests/test_examples.py` runs every `examples/*.slop` and requires nonempty stdout with no errors.
+- `uv run playground/server.py [port]` serves the editor on localhost (default 8080).
+  `POST /run` invokes the CLI with a five-second timeout and appends results to root-level `logs/runs.log`.
+- OpenCode's `run_slop` tool is registered by `.opencode/plugins/run-slop.ts`.
+  It runs the CLI from the project root with `uv run --no-active`; use the CLI directly if the tool isn't loaded.
 
 ## Lesson runs
 
-When the user asks to run a lesson with `bootdev run <uuid>` (for example
-"Please run `bootdev run …` from the project root"), run the command exactly as given, from the
-project root. Never add `-s` yourself: without it the CLI only checks the lesson. If the pasted
-command had no `-s`, say the result was not recorded and remind the user to add `-s` for course
-credit.
-
-If any step fails, report the failures and stop; do not write notes or push.
-
-When every step passes, write the notes and push:
-
-1. Insert a new section at the top of `notes/README.md`, below the intro and above the previous
-   newest lesson.
-2. Each section starts with `## <number> — <title> · YYYY-MM-DD · +XP` (omit `+XP` when the run
-   was not submitted, so the gain is unknown), then covers what the lesson asked, what changed
-   in this repo (files and behavior), `**Key takeaways**` in English, and a short `**中文摘要**`.
-3. Commit the lesson's code changes plus the notes as `notes: <lesson title>`, then push to
-   `origin main`.
-
-Run `/lesson-notes <lesson>` to do this on demand.
+- Run the requested `bootdev run` command verbatim from the repo root. Never add `-s`;
+  without it, tell the user the result wasn't recorded and that `-s` submits for credit.
+- If any step fails, report it and stop before writing notes or pushing.
+- On success, prepend an entry after the intro in `notes/README.md`. Use the CLI's
+  lesson number and title: `## <number> — <title> · YYYY-MM-DD · +<XP> XP`.
+  Omit XP for check-only runs. Cover the task, files and behavior changed, English
+  `**Key takeaways**`, and a short `**中文摘要**`. `/lesson-notes <lesson>` runs this workflow on demand.
+- Commit the lesson changes and notes as `notes: <lesson title>` and push to `origin main`. Never push to `upstream`, the Boot.dev starter.
 
 ## Chapter study guides
 
-When the user pastes a chapter's curriculum, turn it into a study guide at
-`notes/chapters/<kebab-case-title>.md`, then commit as `notes: <chapter title> chapter guide`
-and push to `origin main`. Each guide contains:
-
-1. A one-line thesis and a mental model or story that ties the chapter together.
-2. A cheat-sheet table of the concrete controls, commands, or rules.
-3. Deep notes on the parts that are easy to misremember.
-4. Pitfalls, ideally including ones observed in this project's own runs.
-5. A retention plan: spaced review schedule and active-recall questions with hidden answers.
-6. A short 中文摘要 and a mnemonic.
-
-Keep it readable in one sitting; the goal is review material, not a transcript.
-
-## Conventions
-
-- `docs/spec.md` is the source of truth for language behavior; update it with any language change.
-- Every language change ships with tests in `tests/`. Programs in `examples/` must run cleanly,
-  which `tests/test_examples.py` enforces.
+- When the user pastes a chapter curriculum, write `notes/chapters/<kebab-case-title>.md`,
+  commit as `notes: <chapter title> chapter guide`, and push to `origin main`.
+- Keep it readable in one sitting: thesis and mental model, command/rule cheat sheet,
+  tricky details and repo pitfalls, spaced review and active-recall questions with hidden
+  answers, short 中文摘要, and mnemonic.
