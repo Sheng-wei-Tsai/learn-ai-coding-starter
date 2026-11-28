@@ -10,6 +10,32 @@ Chapter study guides (mental models, cheat sheets, self-tests) live in [`chapter
 
 ---
 
+## 6.11 — Forking · 2026-11-28 · +138 XP
+
+**What the lesson asked:** Continue from a forked session and add a regression test
+for a call used directly as an argument to another call.
+
+**What changed:** `tests/test_nested_calls.py` runs `increment(double(20))` and
+checks that the program prints `41` with no errors. All 142 local tests passed,
+and the Boot.dev submission passed its nested-call check and awarded 138 XP.
+
+**Key takeaways**
+
+- Use `/fork` and choose a point in recent message history. The new session
+  inherits context up to that point, so you can try a different approach
+  without rebuilding context or adding the experiment to the original session.
+- Both sessions share the working directory by default. Returning to the
+  original session leaves the fork's file changes in place. Use a separate
+  Git worktree when the experiment needs filesystem isolation.
+
+**中文摘要**
+
+分岔會複製截至分岔點的對話，之後兩個會話各自進行，但仍共用工作檔案。
+本課新增巢狀呼叫的回歸測試，確認內層呼叫的結果可直接傳給外層，並輸出 `41`。
+課程檢查通過，獲得 138 XP。
+
+---
+
 ## 6.10 — Undo and Redo · 2026-11-28 · +138 XP
 
 **What the lesson asked:** Add a unary-minus regression test, undo the addition,
