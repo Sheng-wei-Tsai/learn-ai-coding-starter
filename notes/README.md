@@ -10,6 +10,34 @@ Chapter study guides (mental models, cheat sheets, self-tests) live in [`chapter
 
 ---
 
+## 7.2 — Rule Precedence · 2026-11-28 · +207 XP
+
+**What the lesson asked:** Add parser-specific rules for grammar methods and
+syntax errors, then apply them without changing parser behavior.
+
+**What changed:** `sloperator/parser/AGENTS.md` calls for one method per grammar
+rule and syntax errors that describe the token found, including end of input.
+`sloperator/parser/parser.py` folds `factor_tail()` into `factor()`, preserving
+multiplication and division precedence, left associativity, and error messages.
+All three Boot.dev checks passed, earning 180 lesson XP and 27 streak XP.
+
+**Key takeaways**
+
+- OpenCode combines global, repo-root, and relevant nested `AGENTS.md` files.
+  Package rules add to the broader guidance.
+- The root rules load at session start. A nested file loads when OpenCode first
+  successfully reads a file or lists a directory in that subtree, and its rules
+  stay in context for the rest of the conversation.
+- Keep package-specific conventions near the code they govern so unrelated
+  sessions don't spend context on them.
+
+**中文摘要**
+
+OpenCode 會合併全域、專案根目錄與相關子目錄的規則。首次成功讀取子目錄內的檔案或列出目錄時，
+才載入該處的規則，並保留到對話結束。本課將 `factor_tail()` 併入 `factor()`，維持解析行為不變。
+
+---
+
 ## 7.1 — AGENTS.md · 2026-11-28 · +207 XP
 
 **What the lesson asked:** Put recurring project instructions in `AGENTS.md` so
