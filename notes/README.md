@@ -10,6 +10,30 @@ Chapter study guides (mental models, cheat sheets, self-tests) live in [`chapter
 
 ---
 
+## 6.10 — Undo and Redo · 2026-11-28 · +138 XP
+
+**What the lesson asked:** Add a unary-minus regression test, undo the addition,
+then redo it and verify that the restored test passes.
+
+**What changed:** `tests/test_unary_minus.py` checks that unary minus rejects both
+boolean literals with the expected runtime error. After undo, the file was absent
+and Git reported no changes under `tests/`. After redo, both cases passed.
+Boot.dev passed the restored-test check and awarded 138 XP.
+
+**Key takeaways**
+
+- Verify undo and redo against the working tree: check that the file is gone
+  after undo and rerun the test after redo.
+- Checking the runtime diagnostic as well as the exit code confirms that unary
+  minus rejected the boolean for the intended reason.
+
+**中文摘要**
+
+本課新增回歸測試，確認一元負號會拒絕兩種布林值並回報預期的執行錯誤。
+復原後確認測試檔已移除，重做後兩個案例皆通過，課程獲得 138 XP。
+
+---
+
 ## 6.9 — Configure Compaction · 2026-11-28 · +336 XP
 
 **What the lesson asked:** Enable automatic compaction, retain 10,000 recent tokens,
